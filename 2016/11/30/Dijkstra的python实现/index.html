@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="图论,dijkstra,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="直接上源码">
+<meta name="keywords" content="图论,dijkstra">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dijkstra的python实现">
+<meta property="og:url" content="http://wj1tr0y.github.io/2016/11/30/Dijkstra的python实现/index.html">
+<meta property="og:site_name" content="wj1tr0y&#39;s blog">
+<meta property="og:description" content="直接上源码">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-01T13:04:08.868Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dijkstra的python实现">
+<meta name="twitter:description" content="直接上源码">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":7},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wj1tr0y.github.io/2016/11/30/Dijkstra的python实现/">
+
+
+
+
+
+  <title>Dijkstra的python实现 | wj1tr0y's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wj1tr0y's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wj1tr0y.github.io/2016/11/30/Dijkstra的python实现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wj1tr0y">
+      <meta itemprop="description" content="生命不息，折腾不止">
+      <meta itemprop="image" content="/uploads/avatar.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wj1tr0y's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Dijkstra的python实现</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-30T12:09:46+08:00">
+                2016-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  941
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>直接上源码</p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"><span class="keyword">from</span> heapq <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dijkstra</span><span class="params">(edges, from_node, to_node)</span>:</span>  <span class="comment">#此处应用了堆，以保证边集的有序性</span></span><br><span class="line">    g = defaultdict(list)</span><br><span class="line">    <span class="keyword">for</span> l,r,c <span class="keyword">in</span> edges:</span><br><span class="line">        g[l].append((c,r))</span><br><span class="line">    q, seen = [(<span class="number">0</span>,from_node,())], set()</span><br><span class="line">    <span class="keyword">while</span> q:</span><br><span class="line">        (cost,v1,path) = heappop(q)  <span class="comment">#从q中取出一个点</span></span><br><span class="line">        <span class="keyword">if</span> v1 <span class="keyword">not</span> <span class="keyword">in</span> seen:  <span class="comment">#如果v1没有访问过则将v1放入seen集</span></span><br><span class="line">            seen.add(v1)</span><br><span class="line">            path = (v1, path)</span><br><span class="line">            <span class="keyword">if</span> v1 == to_node:  <span class="comment">#如果v1就是目标节点则返回</span></span><br><span class="line">                <span class="keyword">return</span> cost,path</span><br><span class="line">            <span class="keyword">for</span> c, v2 <span class="keyword">in</span> g.get(v1, ()):  <span class="comment">#从图中取出与v1相连的点</span></span><br><span class="line">                <span class="keyword">if</span> v2 <span class="keyword">not</span> <span class="keyword">in</span> seen:      <span class="comment">#如果v2没有访问过则将，v2放入q堆，路径长度加上新边长度</span></span><br><span class="line">                    heappush(q, (cost+c, v2, path))</span><br><span class="line">    <span class="keyword">return</span> float(<span class="string">"inf"</span>),[]  <span class="comment">#没有结果，返回无穷大值和空路径集合</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_path</span><span class="params">(edges, from_node, to_node)</span>:</span> <span class="comment">#处理路径函数</span></span><br><span class="line">    len_shortest_path = <span class="number">-1</span></span><br><span class="line">    ret_path=[]</span><br><span class="line">    length,path_queue = dijkstra(edges, from_node, to_node)</span><br><span class="line">    <span class="keyword">if</span> len(path_queue)&gt;<span class="number">0</span>:</span><br><span class="line">        len_shortest_path = length      <span class="comment"># 1. 首先获取长度;</span></span><br><span class="line">        <span class="comment"># 2. 分解路径序列, 找到最短路径</span></span><br><span class="line">        left = path_queue[<span class="number">0</span>]</span><br><span class="line">        ret_path.append(left)       <span class="comment"># 2.1 记录目标点</span></span><br><span class="line">        right = path_queue[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">while</span> len(right)&gt;<span class="number">0</span>:</span><br><span class="line">            left = right[<span class="number">0</span>]</span><br><span class="line">            ret_path.append(left)   <span class="comment"># 2.2 记录其它节点直到源点</span></span><br><span class="line">            right = right[<span class="number">1</span>]</span><br><span class="line">        ret_path.reverse()  <span class="comment"># 3. 反转路径</span></span><br><span class="line">    <span class="keyword">return</span> len_shortest_path,ret_path</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 点集</span></span><br><span class="line"><span class="comment"># list_nodes_id = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];</span></span><br><span class="line"></span><br><span class="line">M=<span class="number">99999</span>     <span class="comment"># 极大的边权，表示两点之间不连接</span></span><br><span class="line"></span><br><span class="line">M_topo = [     <span class="comment"># M_topo 是邻接矩阵.</span></span><br><span class="line">[M, <span class="number">1</span>,<span class="number">1</span>,M,<span class="number">1</span>,M, <span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,M,M, M,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[<span class="number">1</span>, M,<span class="number">1</span>,M,M,<span class="number">1</span>, M,M,M,M,M, M,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[<span class="number">1</span>, <span class="number">1</span>,M,<span class="number">1</span>,M,M, M,M,M,M,M, M,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[M, M,<span class="number">1</span>,M,<span class="number">1</span>,M, M,M,M,M,M, M,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[<span class="number">1</span>, M,M,<span class="number">1</span>,M,M, M,M,M,<span class="number">5</span>,<span class="number">1</span>, <span class="number">1</span>,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[M, <span class="number">1</span>,M,M,M,M, <span class="number">1</span>,M,M,M,M, M,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[<span class="number">1</span>, M,M,M,M,<span class="number">1</span>, M,<span class="number">1</span>,M,M,M, M,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[<span class="number">1</span>, M,M,M,M,M, <span class="number">1</span>,M,<span class="number">1</span>,M,M, M,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[<span class="number">1</span>, M,M,M,M,M, M,<span class="number">1</span>,M,<span class="number">1</span>,M, M,<span class="number">1</span>,M,M,M, M,M,M,M,M],</span><br><span class="line">[M, M,M,M,<span class="number">5</span>,M, M,M,<span class="number">1</span>,M,M, <span class="number">1</span>,M,M,M,M, M,M,M,M,M],</span><br><span class="line">[M, M,M,M,<span class="number">1</span>,M, M,M,M,M,M, <span class="number">1</span>,M,<span class="number">1</span>,M,M, M,M,M,M,M],</span><br><span class="line">[M, M,M,M,<span class="number">1</span>,M, M,M,M,<span class="number">1</span>,<span class="number">1</span>, M,M,<span class="number">1</span>,<span class="number">1</span>,M, M,M,M,M,M],</span><br><span class="line">[M, M,M,M,M,M, M,M,<span class="number">1</span>,M,M, M,M,M,<span class="number">1</span>,M, M,M,M,M,M],</span><br><span class="line">[M, M,M,M,M,M, M,M,M,M,<span class="number">1</span>, <span class="number">1</span>,M,M,<span class="number">1</span>,M, M,<span class="number">1</span>,<span class="number">1</span>,M,M],</span><br><span class="line">[M, M,M,M,M,M, M,M,M,M,M, <span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,M,<span class="number">1</span>, <span class="number">1</span>,M,M,M,M],</span><br><span class="line">[M, M,M,M,M,M, M,M,M,M,M, M,M,M,<span class="number">1</span>,M, <span class="number">1</span>,M,<span class="number">1</span>,<span class="number">1</span>,M],</span><br><span class="line">[M, M,M,M,M,M, M,M,M,M,M, M,M,M,<span class="number">1</span>,<span class="number">1</span>, M,M,M,M,<span class="number">1</span>],</span><br><span class="line">[M, M,M,M,M,M, M,M,M,M,M, M,M,<span class="number">1</span>,M,M, M,M,<span class="number">1</span>,M,M],</span><br><span class="line">[M, M,M,M,M,M, M,M,M,M,M, M,M,<span class="number">1</span>,M,<span class="number">1</span>, M,<span class="number">1</span>,M,<span class="number">1</span>,M],</span><br><span class="line">[M, M,M,M,M,M, M,M,M,M,M, M,M,M,M,<span class="number">1</span>, M,M,<span class="number">1</span>,M,<span class="number">1</span>],</span><br><span class="line">[M, M,M,M,M,M, M,M,M,M,M, M,M,M,M,M, <span class="number">1</span>,M,M,<span class="number">1</span>,M]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment"># --- 读取邻接矩阵, 读取边及其边权</span></span><br><span class="line">edges = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(M_topo)):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(len(M_topo[<span class="number">0</span>])):</span><br><span class="line">        <span class="keyword">if</span> i != j <span class="keyword">and</span> M_topo[i][j] != M:        <span class="comment"># (i,j)之间边权不为无穷大，即有边相连。</span></span><br><span class="line">            edges.append((i,j,M_topo[i][j]))  <span class="comment"># (i,j) 是点和点之间的边; 也就是(i,j)边的长度.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> (<span class="string">"=== Dijkstra ==="</span>)  <span class="comment">#输出结果</span></span><br><span class="line"><span class="keyword">print</span> (<span class="string">"找寻 0 到 9 之间的最短路:"</span>) <span class="comment">#0-9有两条路049，089，此处49之间的边权设为5，以检验算法的有效性</span></span><br><span class="line">length, Shortest_path = find_path(edges, <span class="number">0</span>, <span class="number">9</span>)</span><br><span class="line"><span class="keyword">print</span> (<span class="string">'最短长度为 ='</span>,length)  <span class="comment">#路径长度</span></span><br><span class="line"><span class="keyword">print</span> (<span class="string">'最短路径为: '</span>, end=<span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(Shortest_path)): <span class="comment">#输出路径</span></span><br><span class="line">    <span class="keyword">if</span>(i &lt; len(Shortest_path)<span class="number">-1</span>):</span><br><span class="line">        print(str(Shortest_path[i]) + <span class="string">'-&gt;'</span>,end=<span class="string">''</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(Shortest_path[i],end=<span class="string">''</span>)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图论/" rel="tag"># 图论</a>
+          
+            <a href="/tags/dijkstra/" rel="tag"># dijkstra</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/18/使用pip-install时遇到的一些问题/" rel="next" title="使用pip-install时遇到的一些问题">
+                <i class="fa fa-chevron-left"></i> 使用pip-install时遇到的一些问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/03/使用vagrant搭建centos上的nginx-php-drupal环境/" rel="prev" title="使用vagrant搭建centos上的nginx+php+drupal环境（1）">
+                使用vagrant搭建centos上的nginx+php+drupal环境（1） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.JPG" alt="wj1tr0y">
+            
+              <p class="site-author-name" itemprop="name">wj1tr0y</p>
+              <p class="site-description motion-element" itemprop="description">生命不息，折腾不止</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wj1tr0y</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
